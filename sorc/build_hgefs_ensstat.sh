@@ -26,6 +26,7 @@ export FCMP=${FCMP:-ftn}
 export FCMP95=$FCMP
 
 export FFLAGSM="-O3 -traceback -convert big_endian"
+#export FFLAGSM="-O3 -traceback -convert big_endian -check all -ftrapuv"
 export RECURS=
 export LDFLAGSM=${LDFLAGSM:-""}
 export OMPFLAGM=${OMPFLAGM:-""}
