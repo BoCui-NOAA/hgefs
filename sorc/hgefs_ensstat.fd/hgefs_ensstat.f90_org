@@ -32,8 +32,8 @@ program ens_avgspr_g2
 !   Xianwu Xue 05/11/2018
 !      added 'navg_min' from namelist to determine the minimum members
 !   Bo Cui     09/16/2025
-!      adjust SPFH, impose a low bound of 0 for SPFH average                        
-!      added ipd9 (forecast time) to distinguish between two APCP (with interval vs. accumulated)
+!      adjust SPFH, impose a low bound of 0 for SPFH                        
+!      added ipd9 to help distinguish between two APCP variables
 !      Comment out the lines with "call gtbits" to make the code more flexible for variables 
 !      with large decimal scale factors, such as 12 in SPFH.
 !$$$
@@ -264,16 +264,19 @@ if(nfiles.gt.2) then
         print *, 'ens_spr(8601)= ',ens_spr(8601)
         print *, '   '
 
-        ! adjust SPFH, impose a low bound of 0 for SPFH average
+        ! adjust SPFH, impose a low bound of 0 for SPFH
         
         if(ipd1.eq.1.and.ipd2.eq.0) then
           print*, 'Before Adjusted SPFH Forecast '; print *, ' '
           call message(ens_avg,maxgrd,icount)
+          call message(ens_spr,maxgrd,icount)
           do ij=1,maxgrd
             if(ens_avg(ij).lt.0.0) ens_avg(ij)=0.0
+            if(ens_spr(ij).lt.0.0) ens_spr(ij)=0.0
           enddo
           print*, 'After Adjusted SPFH Forecast '; print *, ' '
           call message(ens_avg,maxgrd,icount)
+          call message(ens_spr,maxgrd,icount)
         endif
 
         print *, '   '
