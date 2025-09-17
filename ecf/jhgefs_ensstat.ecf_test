@@ -4,7 +4,7 @@
 #PBS -q pridev  
 #PBS -l walltime=01:00:00
 #PBS -A GFS-DEV                
-#PBS -l select=1:ncpus=65:mpiprocs=65
+#PBS -l select=1:ncpus=41:mpiprocs=41:mem=100GB
 #PBS -l debug=true
 
 model=hgefs
@@ -46,7 +46,7 @@ export envir=para
 # EXPORT list here
 
 export export OMP_NUM_THREADS=1
-export APRUN="mpiexec -np 65 --cpu-bind core cfp "         
+export APRUN="mpiexec -np 41 --cpu-bind core cfp "         
 export IOBUF_PARAMS='*:sync,%%stdout:sync'
 
 export DATAROOT=/lfs/h2/emc/ptmp/$LOGNAME/tmpnwprd 

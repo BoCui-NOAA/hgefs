@@ -4,7 +4,7 @@
 #PBS -q %QUEUE%
 #PBS -l walltime=00:10:00
 #PBS -A %PROJ%-%PROJENVIR%
-#PBS -l select=1:ncpus=97:mpiprocs=97:mem=100GB
+#PBS -l select=1:ncpus=41:mpiprocs=41:mem=100GB
 #PBS -l debug=true
 
 model=hgefs
@@ -29,7 +29,7 @@ module list
 # EXPORT list here
 
 export export OMP_NUM_THREADS=1
-export APRUN="mpiexec -np 97 --cpu-bind core cfp "         
+export APRUN="mpiexec -np 41 --cpu-bind core cfp "         
 export IOBUF_PARAMS='*:sync,%%stdout:sync'
 
 # CALL executable job script here
