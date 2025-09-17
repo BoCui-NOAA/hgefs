@@ -79,10 +79,10 @@ setpdy.sh
 # Define COM directories
 ########################
 
-#CMD - COMIN_AIGEFS will need to be fixed when aigefs_forecast com structure is updated
+#CMD - COMIN will need to be fixed when aigefs_forecast com structure is updated
 
-export COMIN_AIGEFS=${COMIN_AIGEFS:-$(compath.py ${envir}/$NET/${hgefs_ver}/${RUN}.${PDY}/${cyc}/model)}
-export COMIN_GEFS=${COMIN_GEFS:-$(compath.py ${envir}/com/gefs/${gefs_ver}/${RUN}.${PDY}/${cyc}/atmos)}
+export COMIN_AIGEFS=${COMIN_AIGEFS:-$(compath.py ${envir}/com/aigefs/${aigefs_ver}/aigefs.${PDY}/${cyc}/model)}
+export COMIN_GEFS=${COMIN_GEFS:-$(compath.py ${envir}/com/gefs/${gefs_ver}/gefs.${PDY}/${cyc}/atmos)}
 export COMOUT=${COMOUT:-$(compath.py -o $NET/${hgefs_ver}/$RUN.${PDY}/${cyc}/products/ensstat)}
 
 mkdir -m 775 -p ${COMOUT}

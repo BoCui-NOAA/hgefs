@@ -4,7 +4,8 @@ export python_ver=3.12
 export libjpeg_turbo_ver=2.1.0
 
 export gefs_ver="v12.3"
-#export hgefs_ver="v1.0"
+export aigefs_ver="v1.0"
+export hgefs_ver="v1.0"
 
 # ens mean and spread
 export craype_ver=2.7.17
@@ -18,8 +19,8 @@ export gempak_ver=7.15.1
 #export iobuf_ver=2.0.10
 
 # PARA/TEST
-export COMPATH=/lfs/h1/ops/prod/com/hgefs
-export MAILTO="russell.manser@noaa.gov, carlos.m.diaz@noaa.gov"
+#export COMPATH=/lfs/h1/ops/prod/com/hgefs
+#export MAILTO="russell.manser@noaa.gov, carlos.m.diaz@noaa.gov"
 
 #export SENDDBN=NO
 export DBNLOG=YES
