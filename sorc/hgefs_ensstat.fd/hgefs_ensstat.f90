@@ -36,6 +36,7 @@ program ens_avgspr_g2
 !      added ipd9 (forecast time) to distinguish between two APCP (with interval vs. accumulated)
 !      Comment out the lines with "call gtbits" to make the code more flexible for variables 
 !      with large decimal scale factors, such as 12 in SPFH.
+!      Skip variable total accumulated precipitation (APCP) 
 !$$$
 
 use grib_mod
@@ -64,7 +65,7 @@ real  weight(nmemd)
 
 integer     maxgrd,iret,jret,icount,i,ipdtnum_out
 
-integer     ipd1,ipd2,ipd3,ipd9,ipd10,ipd11,ipd12,ipdn
+integer     ipd1,ipd2,ipd3,ipd9,ipd10,ipd11,ipd12,ipd30,ipdn
 
 integer     iunit,lfipg(nmemd),icfipg(nmemd)
 integer     nfiles,nenspost,iskip(nmemd),tfiles,ifile
@@ -75,7 +76,6 @@ character*255 cfipg(nmemd)
 character*255 cfopg1,cfopg2
 
 real    gmin,gmax
-integer nbit
 
 integer :: navg_min = 10
 
@@ -203,7 +203,14 @@ if(nfiles.gt.2) then
       ipd10=gfldo%ipdtmpl(10)
       ipd11=gfldo%ipdtmpl(11)
       ipd12=gfldo%ipdtmpl(12)
+      ipd30=gfldo%ipdtmpl(30)
       ipdn=gfldo%ipdtnum
+
+      ! print forecast hour
+
+      print *, '   '; print *,' Forecast Hour is        ', ipd9
+      print *, '   '; print *,' Length of Time Range is ', ipd30
+      print *, '   '
 
       ! loop over NAEFS members, get operational ensemble forecast
 
@@ -243,6 +250,12 @@ if(nfiles.gt.2) then
       print *, '   '; print *,' variable has member',inum; print *, '   '
       if(inum.gt.navg_min) then
 
+        ! Skip variables total accumulated APCP               
+
+        if(ipd1.eq.1.and.ipd2.eq.8.and.ipd9.eq.0.and.ipd30.gt.0) then
+           print *, '   '; print *,' Skip variables total accumulated APCP '; print *, '   '
+        else
+
         print *, '   '; print *,  ' Combined Ensemble Data Example at Point 8601 '
         write (*,'(10f8.1)') (fgrid(8601,i),i=1,inum)
         print *, '   '
@@ -267,14 +280,15 @@ if(nfiles.gt.2) then
         ! adjust SPFH, impose a low bound of 0 for SPFH average
         
         if(ipd1.eq.1.and.ipd2.eq.0) then
-          print*, 'Before Adjusted SPFH Forecast '; print *, ' '
-          call message(ens_avg,maxgrd,icount)
+          ! print*, 'Before Adjusted SPFH Forecast '; print *, ' '
+          ! call message(ens_avg,maxgrd,icount)
           do ij=1,maxgrd
             if(ens_avg(ij).lt.0.0) ens_avg(ij)=0.0
           enddo
-          print*, 'After Adjusted SPFH Forecast '; print *, ' '
-          call message(ens_avg,maxgrd,icount)
+          ! print*, 'After Adjusted SPFH Forecast '; print *, ' '
+          ! call message(ens_avg,maxgrd,icount)
         endif
+
 
         print *, '   '
         print *, '----- Output ensemble average and spread for Current Time ------'
@@ -336,16 +350,10 @@ if(nfiles.gt.2) then
         gfldo%ipdtmpl(16)=0      ! code table 4.7, 0=unweighted mean of all Members
         gfldo%ipdtmpl(17)=inum   ! template 4.2, number of forecast in the ensemble
 
-        ! get the number of bits
         ! gfldo%idrtmpl(3) : GRIB2 DRT 5.40 decimal scale factor
 
         ! write(6,*) 'gfldo%idrtmpl(3)=',gfldo%idrtmpl(3)
 
-        !call gtbits(0,gfldo%idrtmpl(3),maxgrd,0,ens_avg,gmin,gmax,nbit)
-
-      ! gfldo%idrtmpl(4) : GRIB2 DRT 5.40 number of bits
-
-        !gfldo%idrtmpl(4)=nbit
 
         gfldo%fld(1:maxgrd)=ens_avg(1:maxgrd)
 
@@ -358,24 +366,16 @@ if(nfiles.gt.2) then
         gfldo%ipdtmpl(16)=2        ! code table 4.7, 2=standard deviation w.r.t cluster mean
         gfldo%ipdtmpl(17)=inum     ! template 4.2, number of forecast in the ensemble
 
-        ! get the number of bits
-        ! gfldo%idrtmpl(3) : GRIB2 DRT 5.40 decimal scale factor
-
-        !call gtbits(0,gfldo%idrtmpl(3),maxgrd,0,ens_spr,gmin,gmax,nbit)
-
-      ! gfldo%idrtmpl(4) : GRIB2 DRT 5.40 number of bits
-
-        !gfldo%idrtmpl(4)=nbit
-
         gfldo%fld(1:maxgrd)=ens_spr(1:maxgrd)
 
         print *, '-----  Ensemble Spread for Current Time ------'
         call putgb2(icfopg2,gfldo,jret)
         call printinfr(gfldo,icount)
 
+        endif   ! skip toral accumulated APCP variable
         ! end of probability forecast calculation
 
-      endif
+      endif   ! inum.gt.navg_min
 
       call gf_free(gfldo)
 
@@ -425,7 +425,7 @@ do j=2,maxgrd
   if(grid(j).lt.dmin) dmin=grid(j)
 enddo
 
-print*, 'Irec ndata   Maximun    Minimum   Example'
+print*, 'Irec ndata   Maximum    Minimum   Example(8601)'
 print '(i3,i8,3f10.2)',ivar,maxgrd,dmax,dmin,grid(8601)
 
 print *, '   '
