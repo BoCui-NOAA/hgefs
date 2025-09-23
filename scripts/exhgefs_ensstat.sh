@@ -22,15 +22,14 @@ hourlist="000 006 012 018 024 030 036 042 048 054 060 066 072 \
           234 240 246 252 258 264 270 276 282 288 294 300 306 \
           312 318 324 330 336 342 348 354 360 366 372 378 384"
 
-memberlist_gefs="p01 p02 p03 p04 p05 p06 p07 p08 p09 p10 \
+memberlist_gefs="c00 p01 p02 p03 p04 p05 p06 p07 p08 p09 p10 \
                  p11 p12 p13 p14 p15 p16 p17 p18 p19 p20 \
                  p21 p22 p23 p24 p25 p26 p27 p28 p29 p30"
 
-memberlist_aigefs="001 002 003 004 005 006 007 008 009 010 \
+memberlist_aigefs="000 001 002 003 004 005 006 007 008 009 010 \
                    011 012 013 014 015 016 017 018 019 020 \
                    021 022 023 024 025 026 027 028 029 030"
 
-#ensstatlist="avg spr mode 10pt 50pt 90pt"
 ensstatlist="avg spr"
 
 outmodel=aigefs
@@ -102,10 +101,6 @@ for prod in pres sfc; do
     echo " nfiles=${ifile}," >>namin_avgspr_${prod}_${nfhrs}
     echo " cfopg1='${outmodel}.t${cyc}z.${prod}.avg.f${nfhrs}.grib2'," >>namin_avgspr_${prod}_${nfhrs}
     echo " cfopg2='${outmodel}.t${cyc}z.${prod}.spr.f${nfhrs}.grib2'," >>namin_avgspr_${prod}_${nfhrs}
-#   echo " cfopg3='${outmodel}.t${cyc}z.${prod}.10pt.f${nfhrs}.grib2',">>namin_avgspr_${prod}_${nfhrs}
-#   echo " cfopg4='${outmodel}.t${cyc}z.${prod}.50pt.f${nfhrs}.grib2',">>namin_avgspr_${prod}_${nfhrs}
-#   echo " cfopg5='${outmodel}.t${cyc}z.${prod}.90pt.f${nfhrs}.grib2',">>namin_avgspr_${prod}_${nfhrs}
-#   echo " cfopg6='${outmodel}.t${cyc}z.${prod}.mode.f${nfhrs}.grib2',">>namin_avgspr_${prod}_${nfhrs}
     echo " /" >>namin_avgspr_${prod}_${nfhrs}
 
   done

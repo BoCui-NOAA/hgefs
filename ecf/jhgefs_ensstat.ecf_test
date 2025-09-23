@@ -4,7 +4,7 @@
 #PBS -q pridev  
 #PBS -l walltime=01:00:00
 #PBS -A GFS-DEV                
-#PBS -l select=1:ncpus=41:mpiprocs=41:mem=100GB
+#PBS -l select=1:ncpus=41:mpiprocs=41:mem=150GB
 #PBS -l debug=true
 
 model=hgefs
@@ -52,8 +52,8 @@ export IOBUF_PARAMS='*:sync,%%stdout:sync'
 export DATAROOT=/lfs/h2/emc/ptmp/$LOGNAME/tmpnwprd 
 
 export COMIN_GEFS=/lfs/h1/ops/prod/com/gefs/v12.3/gefs.$PDY/$cyc/atmos
-export COMIN_AIGEFS=/lfs/h1/ops/para/com/aigefs/v1.0/aigefs.$PDY/$cyc/model
-export COMOUT=/lfs/h2/emc/ptmp/$LOGNAME/com/hgefs/v1.0/hgefs.$PDY/${cyc}/products/ensstat
+export COMIN_AIGEFS=/lfs/h1/ops/para/com/aigefs/v1.0/aigefs.$PDY/$cyc/model/atmos
+export COMOUT=/lfs/h2/emc/ptmp/$LOGNAME/com/hgefs/v1.0/hgefs.$PDY/${cyc}/atmos/products/ensstat
 
 export KEEPDATA=YES
 
