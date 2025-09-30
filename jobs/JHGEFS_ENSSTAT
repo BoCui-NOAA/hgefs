@@ -18,9 +18,7 @@ date
 # obtain unique process id (pid) and make temp directory
 ########################################################
 export pid=$$
-#export DATAROOT=${DATAROOT:-/lfs/f1/ops/${envir}/tmp}
-export DATA=$DATAROOT/${job}.${pid}
-#export DATA=${DATA:-${DATAROOT:?}/${pid}}
+export DATA=${DATA:-${DATAROOT:?}/${pid}}
 
 mkdir -p $DATA
 cd $DATA
@@ -37,7 +35,7 @@ export jlogfile=${jlogfile:-${DATA}/jlogfile.${job}.${pid}}
 # Determine Job Output Name on System
 #####################################
 export outid="LL$job"
-#export jobid="${outid}.o${pid}"
+export jobid="${outid}.o${pid}"
 export pgmout="OUTPUT.${pid}"
 export pgmerr=errfile
 
@@ -62,12 +60,8 @@ export IFHYBRID=YES
  
 export HOMEhgefs=${HOMEhgefs:-${PACKAGEROOT}/hgefs.${hgefs_ver}}
 export EXEChgefs=${EXEChgefs:-$HOMEhgefs/exec}
-export FIXhgefs=${FIXhgefs:-$HOMEhgefs/fix}
-export USHhgefs=${USHhgefs:-$HOMEhgefs/ush}
-
-#export ERRSCRIPT=err_chk
-#export REDOUT='1>>'
-#export REDERR='2>'
+#export FIXhgefs=${FIXhgefs:-$HOMEhgefs/fix}
+#export USHhgefs=${USHhgefs:-$HOMEhgefs/ush}
 
 #########################################
 # Run setpdy and initialize PDY variables
@@ -79,9 +73,9 @@ setpdy.sh
 # Define COM directories
 ########################
 
-export COMIN_AIGEFS=${COMIN_AIGEFS:-$(compath.py ${envir}/com/aigefs/${aigefs_ver}/aigefs.${PDY}/${cyc}/atmos/model)}
+export COMIN_AIGEFS=${COMIN_AIGEFS:-$(compath.py ${envir}/com/aigefs/${aigefs_ver}/aigefs.${PDY}/${cyc})}
 export COMIN_GEFS=${COMIN_GEFS:-$(compath.py ${envir}/com/gefs/${gefs_ver}/gefs.${PDY}/${cyc}/atmos)}
-export COMOUT=${COMOUT:-$(compath.py -o $NET/${hgefs_ver}/$RUN.${PDY}/${cyc}/atmos/products/ensstat)}
+export COMOUT=${COMOUT:-$(compath.py -o $NET/${hgefs_ver}/$RUN.${PDY}/${cyc}/ensstat/products/atmos/grib2)}
 
 mkdir -m 775 -p ${COMOUT}
 

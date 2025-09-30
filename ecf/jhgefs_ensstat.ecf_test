@@ -52,8 +52,8 @@ export IOBUF_PARAMS='*:sync,%%stdout:sync'
 export DATAROOT=/lfs/h2/emc/ptmp/$LOGNAME/tmpnwprd 
 
 export COMIN_GEFS=/lfs/h1/ops/prod/com/gefs/v12.3/gefs.$PDY/$cyc/atmos
-export COMIN_AIGEFS=/lfs/h1/ops/para/com/aigefs/v1.0/aigefs.$PDY/$cyc/model/atmos
-export COMOUT=/lfs/h2/emc/ptmp/$LOGNAME/com/hgefs/v1.0/hgefs.$PDY/${cyc}/atmos/products/ensstat
+export COMIN_AIGEFS=/lfs/h1/ops/para/com/aigefs/v1.0/aigefs.$PDY/${cyc}
+export COMOUT=/lfs/h2/emc/ptmp/$LOGNAME/com/hgefs/v1.0/hgefs.$PDY/${cyc}/ensstat/products/atmos/grib2
 
 export KEEPDATA=YES
 

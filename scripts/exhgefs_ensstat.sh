@@ -63,7 +63,7 @@ for prod in pres sfc; do
 #######################
 
     for mem in $memberlist_aigefs; do
-      file=$COMIN_AIGEFS/mem${mem}/aigefs.t${cyc}z.${prod}.f${nfhrs}.grib2
+      file=$COMIN_AIGEFS/mem${mem}/model/atmos/grib2/aigefs.t${cyc}z.${prod}.f${nfhrs}.grib2
       if [ -s $file ]; then
         (( ifile = ifile + 1 ))
         iskip=0
@@ -72,9 +72,9 @@ for prod in pres sfc; do
       fi
     done
 
-    if [ $ifile -le 2 ]; then
+    if [ $ifile -le 1 ]; then
       echo "FATAL ERROR in exhgefs_ensstat.sh!!!"
-      echo "Fewer than 2 AIGEFS raw files available for fcst hr " $nfhrs
+      echo "Fewer than 1 AIGEFS File Available For Fcst hr " $nfhrs
       export err=1; err_chk
     fi
 
@@ -110,7 +110,9 @@ for prod in pres sfc; do
   fi
 
   for nfhrs in $hourlist; do
-    echo "$EXEChgefs/${pgm} <namin_avgspr_${prod}_${nfhrs} > $pgmout.${nfhrs}_avgspr_${prod}" >> poescript_avgspr_${prod}
+    if [ -s namin_avgspr_${prod}_${nfhrs} ]; then
+      echo "$EXEChgefs/${pgm} <namin_avgspr_${prod}_${nfhrs} > $pgmout.${nfhrs}_avgspr_${prod}" >> poescript_avgspr_${prod}
+    fi
   done
 
   chmod +x poescript_avgspr_${prod}
@@ -123,6 +125,10 @@ for prod in pres sfc; do
         file=${outmodel}.t${cyc}z.${prod}.${ensstat}.f$nfhrs.grib2
         if [ -s $file ]; then
           cpfs $file $COMOUT/
+          $WGRIB2 -s $file > $COMOUT/$file.idx
+          if [ "$SENDDBN" = "YES" ]; then
+            $DBNROOT/bin/dbn_alert MODEL HGEFS_ENSSTAT_GB2 $job $COMOUT/$file
+          fi
         else
           echo "Warning $file missing"
         fi
