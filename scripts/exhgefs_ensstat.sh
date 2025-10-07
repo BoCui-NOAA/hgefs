@@ -124,10 +124,12 @@ for prod in pres sfc; do
       for ensstat in $ensstatlist; do
         file=${outmodel}.t${cyc}z.${prod}.${ensstat}.f$nfhrs.grib2
         if [ -s $file ]; then
-          cpfs $file $COMOUT/
-          $WGRIB2 -s $file > $COMOUT/$file.idx
+          $WGRIB2 -s $file > $file.idx
+          cpfs $file $COMOUT/$file
+          cpfs $file.idx $COMOUT/$file.idx
           if [ "$SENDDBN" = "YES" ]; then
             $DBNROOT/bin/dbn_alert MODEL HGEFS_ENSSTAT_GB2 $job $COMOUT/$file
+            $DBNROOT/bin/dbn_alert MODEL HGEFS_ENSSTAT_GB2_IDX $job $COMOUT/$file.idx
           fi
         else
           echo "Warning $file missing"
