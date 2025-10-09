@@ -17,26 +17,25 @@ date
 ########################################################
 # obtain unique process id (pid) and make temp directory
 ########################################################
-export pid=$$
-export DATA=${DATA:-${DATAROOT:?}/${pid}}
+export job=${job:-$NET}
+export jobid=${jobid:-$$}
+export DATA=${DATA:-${DATAROOT:?}/${jobid}}
 
 mkdir -p $DATA
 cd $DATA
 
 export cycle=t${cyc}z
 
-##################
-# File To Log Msgs
-##################
-
-export jlogfile=${jlogfile:-${DATA}/jlogfile.${job}.${pid}}
+#########################################
+# Run setpdy and initialize PDY variables
+#########################################
+setpdy.sh
+. ./PDY
 
 #####################################
 # Determine Job Output Name on System
 #####################################
-export outid="LL$job"
-export jobid="${outid}.o${pid}"
-export pgmout="OUTPUT.${pid}"
+export pgmout="OUTPUT.${jobid}"
 export pgmerr=errfile
 
 ##############################################################
@@ -58,29 +57,20 @@ export IFHYBRID=YES
 # Specify Execution Areas
 #########################
  
-export HOMEhgefs=${HOMEhgefs:-${PACKAGEROOT}/hgefs.${hgefs_ver}}
 export EXEChgefs=${EXEChgefs:-$HOMEhgefs/exec}
-#export FIXhgefs=${FIXhgefs:-$HOMEhgefs/fix}
-#export USHhgefs=${USHhgefs:-$HOMEhgefs/ush}
-
-#########################################
-# Run setpdy and initialize PDY variables
-#########################################
-setpdy.sh
-. ./PDY
 
 ########################
 # Define COM directories
 ########################
 
-export COMIN_AIGEFS=${COMIN_AIGEFS:-$(compath.py ${envir}/com/aigefs/${aigefs_ver}/aigefs.${PDY}/${cyc})}
-export COMIN_GEFS=${COMIN_GEFS:-$(compath.py ${envir}/com/gefs/${gefs_ver}/gefs.${PDY}/${cyc}/atmos)}
-export COMOUT=${COMOUT:-$(compath.py -o $NET/${hgefs_ver}/$RUN.${PDY}/${cyc}/ensstat/products/atmos/grib2)}
+export COMINaigefs=${COMINaigefs:-$(compath.py ${envir}/aigefs/${aigefs_ver})}/aigefs.${PDY}/${cyc}
+export COMINgefs=${COMINgefs:-$(compath.py ${envir}/gefs/${gefs_ver})}/gefs.${PDY}/${cyc}/atmos
+export COMOUT=${COMOUT:-$(compath.py -o $NET/${hgefs_ver}/$RUN.${PDY})}/${cyc}/ensstat/products/atmos/grib2
 
 mkdir -m 775 -p ${COMOUT}
 
-msg="HAS BEGUN on `hostname`"
-postmsg "$jlogfile" "$msg"
+msg="JOB $job HAS BEGUN on `hostname`"
+postmsg "$msg"
 
 env
 
@@ -88,15 +78,18 @@ env
 # Execute the scripts
 #####################
 
-$HOMEhgefs/scripts/exhgefs_ensstat.sh                  
+$HOMEhgefs/scripts/exhgefs_ensstat.sh
+export err=$?; err_chk "$job failed while running $HOMEhgefs/scripts/exhgefs_ensstat.sh"
 
-cat $DATA/$pgmout.120_avgspr_pres
-cat $DATA/$pgmout.240_avgspr_pres
-cat $DATA/$pgmout.120_avgspr_sfc 
-cat $DATA/$pgmout.240_avgspr_sfc
+msg="JOB $job HAS COMPLETED NORMALLY"
+postmsg "$msg"
 
-msg="JOB COMPLETED NORMALLY"
-postmsg "$jlogfile" "$msg"
+if [ -e $pgmout ]; then
+  cat $pgmout
+fi
+if [ -e $errfile ]; then
+  cat $errfile
+fi
 
 ########################################
 # Remove the Temporary working directory
