@@ -38,6 +38,8 @@ program ens_avgspr_g2
 !      with large decimal scale factors, such as 12 in SPFH.
 !      Skip variable total accumulated precipitation (APCP) 
 !      update nmemd the total number of ensemble input files expected,including future addition
+!   Bo Cui     10/08/2025
+!      set HGEFS product ID as 139
 !$$$
 
 use grib_mod
@@ -297,6 +299,10 @@ if(nfiles.gt.2) then
         print *, '   '
         print *, '----- Output ensemble average and spread for Current Time ------'
         print *, '   '
+
+        ! change the generating process IDs for HGEFS to be 139
+
+        gfldo%ipdtmpl(5)=139
 
         ! fnmoc tmax and tmin have message different from ncep, modify them as ncep
 
