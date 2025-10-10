@@ -35,8 +35,7 @@ setpdy.sh
 #####################################
 # Determine Job Output Name on System
 #####################################
-export pgmout="OUTPUT.${jobid}"
-export pgmerr=errfile
+export pgmout="OUTPUT.$$"
 
 ##############################################################
 # SENDCOM=YES--Copy output file to ${COMROOT}
@@ -87,8 +86,8 @@ postmsg "$msg"
 if [ -e $pgmout ]; then
   cat $pgmout
 fi
-if [ -e $errfile ]; then
-  cat $errfile
+if [ -e errfile ]; then
+  cat errfile
 fi
 
 ########################################

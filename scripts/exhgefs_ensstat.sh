@@ -97,7 +97,7 @@ for prod in pres sfc; do
     echo " cfopg2='${outmodel}.t${cyc}z.${prod}.spr.f${nfhrs}.grib2'," >>namin_avgspr_${prod}_${nfhrs}
     echo " /" >>namin_avgspr_${prod}_${nfhrs}
 
-    $EXEChgefs/${pgm} <namin_avgspr_${prod}_${nfhrs} > $pgmout.${nfhrs}_avgspr_${prod}
+    $EXEChgefs/${pgm} <namin_avgspr_${prod}_${nfhrs} >> ${pgmout} 2>> errfile
     export err=$?; err_chk "$job failed while running ${pgm}"
 
   ls $DATA
