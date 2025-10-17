@@ -16,6 +16,11 @@ pgm=hgefs_ensstat
 #  calculate ensemble mean and spread
 #####################################
 
+hourlist="000 006 012 018 024 030 036 042 048 054 060 066 072 \
+          078 084 090 096 102 108 114 120 126 132 138 144 150 \
+          156 162 168 174 180 186 192 198 204 210 216 222 228 \
+          234 240"
+
 memberlist_gefs="c00 p01 p02 p03 p04 p05 p06 p07 p08 p09 p10 \
                  p11 p12 p13 p14 p15 p16 p17 p18 p19 p20 \
                  p21 p22 p23 p24 p25 p26 p27 p28 p29 p30"
@@ -37,6 +42,8 @@ fi
 ######################################################
 
 for prod in pres sfc; do
+
+  for nfhrs in $hourlist; do
 
     if [ -s namin_avgspr_${prod}_${nfhrs} ]; then
      rm namin_avgspr_${prod}_${nfhrs}
@@ -90,19 +97,31 @@ for prod in pres sfc; do
       export err=1; err_chk "$msg"
     fi
 
-    ls $DATA
-
     echo " nfiles=${ifile}," >>namin_avgspr_${prod}_${nfhrs}
     echo " cfopg1='${outmodel}.t${cyc}z.${prod}.avg.f${nfhrs}.grib2'," >>namin_avgspr_${prod}_${nfhrs}
     echo " cfopg2='${outmodel}.t${cyc}z.${prod}.spr.f${nfhrs}.grib2'," >>namin_avgspr_${prod}_${nfhrs}
     echo " /" >>namin_avgspr_${prod}_${nfhrs}
 
-    $EXEChgefs/${pgm} <namin_avgspr_${prod}_${nfhrs} >> ${pgmout} 2>> errfile
-    export err=$?; err_chk "$job failed while running ${pgm}"
+  done
+
+  if [ -s poescript_avgspr_${prod} ]; then
+    rm poescript_avgspr_${prod}
+  fi
+
+  for nfhrs in $hourlist; do
+    if [ -s namin_avgspr_${prod}_${nfhrs} ]; then
+      echo "$EXEChgefs/${pgm} <namin_avgspr_${prod}_${nfhrs} > $pgmout.${nfhrs}_avgspr_${prod}" >> poescript_avgspr_${prod}
+    fi
+  done
 
   ls $DATA
 
+  chmod +x poescript_avgspr_${prod}
+  $APRUN poescript_avgspr_${prod}
+  export err=$?; err_chk "Failed while running one or more instances of $pgm"
+
   if [ "$SENDCOM" = "YES" ]; then
+    for nfhrs in $hourlist; do
       for ensstat in $ensstatlist; do
         file=${outmodel}.t${cyc}z.${prod}.${ensstat}.f$nfhrs.grib2
         if [ -s $file ]; then
@@ -120,6 +139,7 @@ for prod in pres sfc; do
           export err=1; err_chk "$file missing"
         fi
       done
+    done
   fi
 
 done

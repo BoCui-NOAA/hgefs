@@ -3,3 +3,9 @@ export wgrib2_ver=2.0.8
 
 export gefs_ver="v12.3"
 export aigefs_ver="v1.0"
+
+# ens mean and spread
+export craype_ver=2.7.17
+export cray_mpich_ver=8.1.19
+export cray_pals_ver=1.0.17
+export cfp_ver=2.0.4

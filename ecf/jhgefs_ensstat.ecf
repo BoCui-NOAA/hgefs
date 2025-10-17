@@ -1,10 +1,10 @@
-#PBS -N hgefs_ensstat_f%FHR%_%CYC%
+#PBS -N hgefs_ensstat_%CYC%
 #PBS -j oe
 #PBS -S /bin/bash
 #PBS -q %QUEUE%
 #PBS -l walltime=00:15:00
 #PBS -A %PROJ%-%PROJENVIR%
-#PBS -l select=1:ncpus=1:mpiprocs=1:mem=4GB
+#PBS -l select=1:ncpus=41:mpiprocs=41:mem=200GB
 #PBS -l debug=true
 
 model=hgefs
@@ -13,11 +13,18 @@ model=hgefs
 %include <envir-p1.h>
 
 export cyc=%CYC%
-export nfhrs=%FHR%
 
 module load intel/${intel_ver:?}
+module load craype/${craype_ver:?}
+module load cray-mpich/${cray_mpich_ver:?}
+module load cray-pals/${cray_pals_ver:?}
+module load cfp/${cfp_ver:?}
 module load wgrib2/${wgrib2_ver:?}
 module list
+
+export OMP_NUM_THREADS=1
+export APRUN="mpiexec -np 41 --cpu-bind core cfp"
+export IOBUF_PARAMS='*:sync,%%stdout:sync'
 
 $HOMEhgefs/jobs/JHGEFS_ENSSTAT 
 if [[ $? -ne 0 ]]; then
@@ -29,7 +36,8 @@ fi
 %include <tail.h>
 %manual
 ######################################################################
-# Purpose: Calculates the mean and spread for hgefs at one lead time.
+# Purpose: Calculates the mean and spread for the hybrid ensemble 
+#          AIGEFS + GEFS.
 ######################################################################
 
 ######################################################################
