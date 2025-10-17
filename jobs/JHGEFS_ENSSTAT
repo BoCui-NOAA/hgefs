@@ -83,9 +83,11 @@ export err=$?; err_chk "$job failed while running $HOMEhgefs/scripts/exhgefs_ens
 msg="JOB $job HAS COMPLETED NORMALLY"
 postmsg "$msg"
 
-if [ -e $pgmout ]; then
-  cat $pgmout
-fi
+cat $DATA/$pgmout.120_avgspr_pres
+cat $DATA/$pgmout.240_avgspr_pres
+cat $DATA/$pgmout.120_avgspr_sfc
+cat $DATA/$pgmout.240_avgspr_sfc
+
 if [ -e errfile ]; then
   cat errfile
 fi
