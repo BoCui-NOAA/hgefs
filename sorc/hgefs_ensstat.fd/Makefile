@@ -11,7 +11,7 @@ FFLAGS  =$(FFLAGSM)
 OMPFLAG	=$(OMPFLAGM)
 LDFLAGS =$(LDFLAGSM)
 
-SRCSf90	= hgefs_ensstat.f90 init_parm.f90 printinfr.f90 isrchne.f90
+SRCSf90	= hgefs_ensstat.f90 init_parm.f90 printinfr.f90 
 SRCSf	= EPDF.f SORTMM.f
 
 SRCS	= $(SRCSf90) $(SRCSf)

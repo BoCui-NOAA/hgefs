@@ -1,0 +1,25 @@
+
+Build instructions:
+
+1. cd to the sorc directory
+
+2. To build, install, and clean executable hgefs_enssat
+
+     ./build_hgefs_ensstat.sh >& hgefs.compile.log
+
+3. To build, install, and clean executable hgefs_enssat in debug mode
+
+     ./build_hgefs_ensstat.sh debug >& hgefs.compile.log
+
+4. To build executable hgefs_enssat
+
+     ./build_hgefs_ensstat.sh build >& hgefs.compile.log
+
+5. To clean build files in hgefs_enssat.fd
+
+     ./build_hgefs_ensstat.sh clean >& hgefs.compile.log
+
+6. To install executable hgefs_enssat
+
+     ./build_hgefs_ensstat.sh install >& hgefs.compile.log
+
