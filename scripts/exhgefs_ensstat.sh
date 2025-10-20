@@ -31,12 +31,6 @@ memberlist_aigefs="000 001 002 003 004 005 006 007 008 009 010 \
 
 ensstatlist="avg spr"
 
-outmodel=aigefs
-
-if [ "$IFHYBRID" = "YES" ]; then
-  outmodel=hgefs  
-fi
-
 ######################################################
 # start mean and spread calculation for each lead time
 ######################################################
@@ -52,6 +46,8 @@ for prod in pres sfc; do
     echo " &namens" >>namin_avgspr_${prod}_${nfhrs}
 
     ifile=0
+    aigefs_count=0
+    gefs_count=0
 
 #######################
 # AIGEFS ensemble input
@@ -61,45 +57,56 @@ for prod in pres sfc; do
       file=$COMINaigefs/mem${mem}/model/atmos/grib2/aigefs.t${cyc}z.${prod}.f${nfhrs}.grib2
       if [ -s $file ]; then
         (( ifile = ifile + 1 ))
+        (( aigefs_count = aigefs_count + 1 ))
         iskip=0
         echo " cfipg($ifile)='${file}'," >>namin_avgspr_${prod}_${nfhrs}
         echo " iskip($ifile)=${iskip}," >>namin_avgspr_${prod}_${nfhrs}
+      else
+        msg="File does not exist or has size zero: ${file}"
+        export err=1; err_chk "$msg"
       fi
+
     done
 
-    if [ $ifile -le 1 ]; then
+    if [ $aigefs_count -le 1 ]; then
       msg="Fewer than 1 AIGEFS files available for fcst hr $nfhrs"
       export err=1; err_chk "$msg"
+    else
+      echo "Found ${aigefs_count} AIGEFS files for ${prod} and hour ${nfhrs}"
     fi
 
 #########################################
 # GEFS ensemble input for hybrid products
 #########################################
 
-    if [ "$IFHYBRID" = "YES" ]; then
-      for mem in $memberlist_gefs; do
-        if [ "${prod}" = "pres" ]; then 
-          file=$COMINgefs/pgrb2p25/ge${mem}.t${cyc}z.pgrb2.0p25.f${nfhrs}            
-        elif [ "${prod}" = "sfc" ]; then 
-          file=$COMINgefs/pgrb2sp25/ge${mem}.t${cyc}z.pgrb2s.0p25.f${nfhrs}            
-        fi
-        if [ -s $file ]; then
-          (( ifile = ifile + 1 ))
-          iskip=0
-          echo " cfipg($ifile)='${file}'," >>namin_avgspr_${prod}_${nfhrs}
-          echo " iskip($ifile)=${iskip}," >>namin_avgspr_${prod}_${nfhrs}
-        fi
-      done
-    fi
+    for mem in $memberlist_gefs; do
+      if [ "${prod}" = "pres" ]; then 
+        file=$COMINgefs/pgrb2p25/ge${mem}.t${cyc}z.pgrb2.0p25.f${nfhrs}            
+      elif [ "${prod}" = "sfc" ]; then 
+        file=$COMINgefs/pgrb2sp25/ge${mem}.t${cyc}z.pgrb2s.0p25.f${nfhrs}            
+      fi
+      if [ -s $file ]; then
+        (( ifile = ifile + 1 ))
+        (( gefs_count = gefs_count + 1 ))
+        iskip=0
+        echo " cfipg($ifile)='${file}'," >>namin_avgspr_${prod}_${nfhrs}
+        echo " iskip($ifile)=${iskip}," >>namin_avgspr_${prod}_${nfhrs}
+      else
+        msg="File does not exist or has size zero: ${file}"
+        export err=1; err_chk "$msg"
+      fi
+    done
 
-    if [ $ifile -le 1 ]; then
+    if [ $gefs_count -le 1 ]; then
       msg="Fewer than 1 GEFS/AIGEFS files available for fcst hr $nfhrs"
       export err=1; err_chk "$msg"
+    else
+      echo "Found ${gefs_count} GEFS files for ${prod} and hour ${nfhrs}"
     fi
 
     echo " nfiles=${ifile}," >>namin_avgspr_${prod}_${nfhrs}
-    echo " cfopg1='${outmodel}.t${cyc}z.${prod}.avg.f${nfhrs}.grib2'," >>namin_avgspr_${prod}_${nfhrs}
-    echo " cfopg2='${outmodel}.t${cyc}z.${prod}.spr.f${nfhrs}.grib2'," >>namin_avgspr_${prod}_${nfhrs}
+    echo " cfopg1='hgefs.t${cyc}z.${prod}.avg.f${nfhrs}.grib2'," >>namin_avgspr_${prod}_${nfhrs}
+    echo " cfopg2='hgefs.t${cyc}z.${prod}.spr.f${nfhrs}.grib2'," >>namin_avgspr_${prod}_${nfhrs}
     echo " /" >>namin_avgspr_${prod}_${nfhrs}
 
   done
@@ -123,7 +130,7 @@ for prod in pres sfc; do
   if [ "$SENDCOM" = "YES" ]; then
     for nfhrs in $hourlist; do
       for ensstat in $ensstatlist; do
-        file=${outmodel}.t${cyc}z.${prod}.${ensstat}.f$nfhrs.grib2
+        file=hgefs.t${cyc}z.${prod}.${ensstat}.f$nfhrs.grib2
         if [ -s $file ]; then
           cpfs $file $COMOUT/$file
 
@@ -136,7 +143,7 @@ for prod in pres sfc; do
             $DBNROOT/bin/dbn_alert MODEL HGEFS_ENSSTAT_GB2_IDX $job $COMOUT/$file.idx
           fi
         else
-          export err=1; err_chk "$file missing"
+          export err=1; err_chk "$file missing after running $pgm"
         fi
       done
     done
