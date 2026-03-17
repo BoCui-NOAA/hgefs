@@ -19,7 +19,15 @@ module load craype/${craype_ver:?}
 module load cray-mpich/${cray_mpich_ver:?}
 module load cray-pals/${cray_pals_ver:?}
 module load cfp/${cfp_ver:?}
+module load netcdf-D/${netcdf_D_ver:?}
+module load libaec/${libaec_ver:?}
+module load ip/${ip_ver:?}
+module load g2c/${g2c_ver:?}
+module load jasper/${jasper_ver:?}
+module load libpng/${libpng_ver:?}
+module load zlib/${zlib_ver:?}
 module load wgrib2/${wgrib2_ver:?}
+module load libjpeg-turbo/${libjpeg_turbo_ver:?}
 module list
 
 export OMP_NUM_THREADS=1
